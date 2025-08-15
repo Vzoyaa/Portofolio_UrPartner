@@ -1,7 +1,5 @@
 <template>
   <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
-    <!-- Background Gradient -->
-    <div class="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-700"></div>
 
     <!-- Canvas untuk Partikel -->
     <canvas ref="particleCanvas" class="absolute inset-0 w-full h-full"></canvas>
@@ -44,12 +42,12 @@
           data-aos="fade-up"
           data-aos-delay="500"
         >
-          <a href="#projects" class="btn-primary group">
+          <router-link to="/projects" class="btn-primary group">
             <span class="flex items-center">
               Lihat Portfolio
               <ArrowRightIcon class="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
             </span>
-          </a>
+          </router-link>
           
           <a 
             href="#contact" 

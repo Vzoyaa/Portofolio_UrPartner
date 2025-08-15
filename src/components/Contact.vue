@@ -1,5 +1,5 @@
 <template>
-  <section id="contact" class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+  <section id="contact" class="min-h-screen bg-transparent overflow-hidden">
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-20">
       <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgba(139, 92, 246, 0.3) 1px, transparent 0); background-size: 20px 20px;"></div>
@@ -240,37 +240,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Bottom CTA -->
-      <div 
-        class="text-center mt-16"
-        data-aos="fade-up"
-        data-aos-delay="800"
-      >
-        <div class="bg-slate-800/30 backdrop-blur-lg rounded-2xl p-8 border border-slate-700/30 max-w-2xl mx-auto hover:bg-slate-800/50 transition-all duration-500 hover:shadow-xl hover:shadow-purple-500/10">
-          <h3 class="text-2xl font-bold text-white mb-4">Siap Memulai Proyek?</h3>
-          <p class="text-gray-300 mb-6">
-            Dapatkan konsultasi gratis untuk proyek Anda. Mari diskusikan ide dan solusi terbaik!
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="https://wa.me/6281234567890" 
-              target="_blank"
-              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-green-500/25 inline-flex items-center justify-center group"
-            >
-              <ChatBubbleLeftRightIcon class="h-5 w-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
-              WhatsApp
-            </a>
-            <a 
-              href="mailto:support@urpartnerid.com"
-              class="bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-slate-500/25 inline-flex items-center justify-center group"
-            >
-              <EnvelopeIcon class="h-5 w-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
-              Email
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 </template>
@@ -318,15 +287,15 @@ export default {
       {
         name: 'Instagram',
         handle: '@urpartner.id',
-        href: 'https://instagram.com/yourinstagram',
+        href: 'https://www.instagram.com/urpartnerid/',
         icon: instagramIcon,
         iconBg: 'bg-pink-600',
         hoverClass: 'hover:from-pink-600 hover:to-red-600'
       },
       {
         name: 'WhatsApp',
-        handle: '+62 812 3456 7890',
-        href: 'https://wa.me/6281234567890',
+        handle: '+62 UrPartnerID',
+        href: 'https://wa.me/6285161346599',
         icon: whatsappIcon,
         iconBg: 'bg-green-600',
         hoverClass: 'hover:from-green-600 hover:to-green-700'
@@ -349,8 +318,8 @@ export default {
       },
       {
         name: 'TikTok',
-        handle: '@',
-        href: 'https://tiktok.com/@yourtiktok',
+        handle: '@urpartnerid',
+        href: 'https://tiktok.com/@urpartnerid',
         icon: tiktokIcon,
         iconBg: 'bg-grey',
         hoverClass: 'hover:from-gray-900 hover:to-black'
@@ -358,21 +327,7 @@ export default {
     ]
 
     const comments = ref([
-      {
-        name: 'Doni',
-        message: 'Saya pedas projectionya',
-        date: 'Jul 26, 2024'
-      },
-      {
-        name: 'Aji',
-        message: 'Keren bgt!',
-        date: 'Jul 26, 2024'
-      },
-      {
-        name: 'Medianoy',
-        message: 'Amazing work!',
-        date: 'Jul 24, 2024'
-      }
+      
     ])
 
     // New comment inputs

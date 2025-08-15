@@ -1,61 +1,94 @@
 <template>
-  <section id="Projects" class="section-padding bg-white">
-    <div class="container-custom">
+  <section id="Projects" class="min-h-screen py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="text-center mb-16">
-        <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-          Portfolio <span class="text-gradient">Saya</span>
+        <h2 class="text-4xl lg:text-5xl font-bold text-white mb-4">
+          My <span class="text-blue-400">Portfolio</span>
         </h2>
-        <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full mb-6"></div>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-          Berikut adalah beberapa proyek yang telah saya kerjakan dengan penuh dedikasi dan kreativitas
+        <div class="w-16 h-1 bg-blue-500 mx-auto mb-6"></div>
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+          Here are some of the projects I've worked on with dedication and creativity
         </p>
       </div>
 
-      <!-- Filter Tabs -->
+      <!-- Navigation Tabs -->
       <div class="flex justify-center mb-12">
-        <div class="flex flex-wrap gap-2 bg-gray-100 p-2 rounded-full">
+        <div class="flex bg-gray-800/50 backdrop-blur-sm rounded-xl p-1 border border-gray-700/50">
           <button
-            v-for="category in categories"
-            :key="category"
-            @click="activeFilter = category"
+            @click="activeTab = 'Projects'"
             :class="[
-              'px-6 py-2 rounded-full font-medium transition-all duration-300',
-              activeFilter === category
-                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+              'flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300',
+              activeTab === 'Projects'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
             ]"
           >
-            {{ category }}
+            <CodeBracketIcon class="h-5 w-5" />
+            Projects
+          </button>
+          <button
+            @click="activeTab = 'Tech Stack'"
+            :class="[
+              'flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300',
+              activeTab === 'Tech Stack'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+            ]"
+          >
+            <Cog6ToothIcon class="h-5 w-5" />
+            Tech Stack
           </button>
         </div>
       </div>
 
-      <!-- Projects Grid -->
-<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-  <div
-    v-for="project in filteredProjects"
-    :key="project.id"
-    class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-    @click="openProject(project)"
-  >
-          <!-- Project Image -->
-          <div class="relative overflow-hidden">
-            <div 
-              class="h-64 flex items-center justify-center text-white text-lg font-medium"
-              :class="project.gradient"
+      <!-- Projects Content -->
+      <div v-if="activeTab === 'Projects'">
+        <!-- Project Filter Tabs -->
+        <div class="flex justify-center mb-12">
+          <div class="inline-flex bg-gray-800/30 backdrop-blur-sm rounded-lg p-1 border border-gray-700/30">
+            <button
+              v-for="category in categories"
+              :key="category"
+              @click="activeFilter = category"
+              :class="[
+                'px-6 py-2 rounded-md font-medium transition-all duration-300 text-sm',
+                activeFilter === category
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-gray-400 hover:text-white'
+              ]"
             >
-              <div class="text-center">
-                <div class="text-4xl mb-4">{{ project.emoji }}</div>
-                <div>{{ project.title }}</div>
-              </div>
+              {{ category }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            v-for="project in filteredProjects"
+            :key="project.id"
+            class="group bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer"
+            @click="openProject(project)"
+          >
+          <!-- Project Image/Icon -->
+          <div class="relative overflow-hidden bg-gray-50">
+            <div 
+              class="h-48 flex items-center justify-center"
+              :class="project.bgColor"
+            >
+              <component 
+                :is="project.icon" 
+                class="h-16 w-16 text-white opacity-80 group-hover:opacity-100 transition-opacity duration-300" 
+              />
             </div>
             
-            <!-- Overlay on hover -->
-            <div class="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-              <div class="text-center text-white">
-                <div class="text-2xl mb-2">👁️</div>
-                <p class="text-sm">Lihat Detail</p>
+            <!-- Hover Overlay -->
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="bg-white/90 backdrop-blur-sm rounded-full p-3">
+                  <EyeIcon class="h-6 w-6 text-gray-800" />
+                </div>
               </div>
             </div>
           </div>
@@ -63,321 +96,359 @@
           <!-- Project Info -->
           <div class="p-6">
             <div class="flex items-center justify-between mb-3">
-              <span class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+              <span class="text-xs font-semibold text-blue-400 bg-blue-500/20 px-2 py-1 rounded-full uppercase tracking-wide">
                 {{ project.category }}
               </span>
               <div class="flex space-x-2">
                 <a 
                   :href="project.github"
-                  class="text-gray-400 hover:text-gray-600 transition-colors duration-300"
+                  class="text-gray-400 hover:text-blue-400 transition-colors duration-300"
                   @click.stop
                   target="_blank"
                 >
-                  💻
+                  <CodeBracketIcon class="h-5 w-5" />
                 </a>
                 <a 
                   :href="project.demo"
-                  class="text-gray-400 hover:text-gray-600 transition-colors duration-300"
+                  class="text-gray-400 hover:text-blue-400 transition-colors duration-300"
                   @click.stop
                   target="_blank"
                 >
-                  🔗
+                  <LinkIcon class="h-5 w-5" />
                 </a>
               </div>
             </div>
             
-            <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors duration-300">
+            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-300">
               {{ project.title }}
             </h3>
             
-            <p class="text-gray-600 mb-4">
+            <p class="text-gray-300 text-sm mb-4 leading-relaxed">
               {{ project.description }}
             </p>
             
             <!-- Tech Stack -->
             <div class="flex flex-wrap gap-2">
               <span
-                v-for="tech in project.technologies"
+                v-for="tech in project.technologies.slice(0, 3)"
                 :key="tech"
-                class="text-xs font-medium bg-gray-100 text-gray-700 px-2 py-1 rounded-md"
+                class="text-xs bg-gray-700/50 text-gray-300 px-2 py-1 rounded-md font-medium"
               >
                 {{ tech }}
+              </span>
+              <span
+                v-if="project.technologies.length > 3"
+                class="text-xs bg-gray-700/50 text-gray-300 px-2 py-1 rounded-md font-medium"
+              >
+                +{{ project.technologies.length - 3 }}
               </span>
             </div>
           </div>
         </div>
+              </div>
+        </div>
       </div>
 
-      <!-- Load More Button -->
-      <div class="text-center mt-12" v-if="!showAll">
-        <button 
-          class="px-8 py-3 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-300"
-          @click="loadMore"
-        >
-          Lihat Lebih Banyak ⬇️
-        </button>
+      <!-- Tech Stack Content -->
+      <div v-if="activeTab === 'Tech Stack'">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          <div
+            v-for="tech in techStack"
+            :key="tech.name"
+            class="group bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 text-center hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer hover:scale-105"
+          >
+            <div class="mb-4">
+              <div 
+                class="w-16 h-16 mx-auto rounded-lg flex items-center justify-center p-2"
+                :style="{ backgroundColor: tech.color + '20', border: '1px solid ' + tech.color + '30' }"
+              >
+                <img 
+                  :src="tech.iconUrl"
+                  :alt="tech.name + ' icon'"
+                  class="w-10 h-10 object-contain"
+                  @error="handleImageError"
+                />
+              </div>
+            </div>
+            <h3 class="font-semibold text-white group-hover:text-blue-400 transition-colors duration-300">
+              {{ tech.name }}
+            </h3>
+            <p class="text-xs text-gray-400 mt-1">{{ tech.category }}</p>
+            
+            <!-- Progress Bar -->
+            <div class="mt-3">
+              <div class="w-full bg-gray-700/50 rounded-full h-1.5">
+                <div 
+                  class="h-1.5 rounded-full transition-all duration-500"
+                  :style="{ width: tech.level + '%', backgroundColor: tech.color }"
+                ></div>
+              </div>
+              <p class="text-xs text-gray-400 mt-1">{{ tech.level }}%</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
     <!-- Project Modal -->
-    <div
-      v-if="selectedProject"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
-      @click="closeProject"
-    >
+    <transition name="modal" appear>
       <div
-        class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-        @click.stop
+        v-if="selectedProject"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        @click="closeProject"
       >
-        <!-- Modal Header -->
-        <div class="relative p-6 border-b">
-          <h3 class="text-2xl font-bold text-gray-900">{{ selectedProject.title }}</h3>
-          <button
-            @click="closeProject"
-            class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 text-2xl"
-          >
-            ✕
-          </button>
-        </div>
-
-        <!-- Modal Content -->
-        <div class="p-6">
-          <div 
-            class="h-64 rounded-xl mb-6 flex items-center justify-center text-white text-xl"
-            :class="selectedProject.gradient"
-          >
-            <div class="text-6xl">{{ selectedProject.emoji }}</div>
+        <div
+          class="bg-gray-900 border border-gray-700 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+          @click.stop
+        >
+          <!-- Modal Header -->
+          <div class="relative px-6 py-4 border-b border-gray-700">
+            <div class="flex items-center gap-3">
+              <div class="p-2 rounded-lg" :class="selectedProject.bgColor">
+                <component :is="selectedProject.icon" class="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 class="text-2xl font-bold text-white">
+                  {{ selectedProject.title }}
+                </h3>
+                <p class="text-sm text-gray-400">{{ selectedProject.category }}</p>
+              </div>
+            </div>
+            <button
+              @click="closeProject"
+              class="absolute top-4 right-6 text-gray-400 hover:text-white p-2"
+            >
+              <XMarkIcon class="h-6 w-6" />
+            </button>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-8">
-            <div>
-              <h4 class="text-lg font-semibold text-gray-900 mb-3">Deskripsi Project</h4>
-              <p class="text-gray-600 mb-6">{{ selectedProject.fullDescription }}</p>
-
-              <h4 class="text-lg font-semibold text-gray-900 mb-3">Fitur Utama</h4>
-              <ul class="space-y-2 text-gray-600">
-                <li v-for="feature in selectedProject.features" :key="feature" class="flex items-start">
-                  <span class="text-green-500 mr-2">✅</span>
-                  {{ feature }}
-                </li>
-              </ul>
+          <!-- Modal Content -->
+          <div class="p-6">
+            <!-- Project Preview -->
+            <div 
+              class="h-64 rounded-xl mb-8 flex items-center justify-center shadow-inner border border-gray-700/50"
+              :class="selectedProject.bgColor"
+            >
+              <component :is="selectedProject.icon" class="h-24 w-24 text-white/80" />
             </div>
 
-            <div>
-              <h4 class="text-lg font-semibold text-gray-900 mb-3">Teknologi</h4>
-              <div class="flex flex-wrap gap-2 mb-6">
-                <span
-                  v-for="tech in selectedProject.technologies"
-                  :key="tech"
-                  class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"
-                >
-                  {{ tech }}
-                </span>
+            <div class="grid lg:grid-cols-2 gap-8">
+              <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Project Description</h4>
+                <p class="text-gray-300 mb-6 leading-relaxed">{{ selectedProject.fullDescription }}</p>
+
+                <h4 class="text-lg font-semibold text-white mb-4">Key Features</h4>
+                <ul class="space-y-3">
+                  <li v-for="feature in selectedProject.features" :key="feature" class="flex items-start">
+                    <CheckCircleIcon class="text-green-400 mr-3 h-5 w-5 mt-0.5 flex-shrink-0" />
+                    <span class="text-gray-300">{{ feature }}</span>
+                  </li>
+                </ul>
               </div>
 
-              <div class="flex gap-4">
-                <a 
-                  :href="selectedProject.github"
-                  class="flex-1 text-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-300"
-                  target="_blank"
-                >
-                  💻 Source Code
-                </a>
-                <a 
-                  :href="selectedProject.demo"
-                  class="flex-1 text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
-                  target="_blank"
-                >
-                  🔗 Live Demo
-                </a>
+              <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Technologies Used</h4>
+                <div class="flex flex-wrap gap-2 mb-8">
+                  <span
+                    v-for="tech in selectedProject.technologies"
+                    :key="tech"
+                    class="bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded-lg text-sm font-medium border border-blue-500/30"
+                  >
+                    {{ tech }}
+                  </span>
+                </div>
+
+                <div class="space-y-3">
+                  <a 
+                    :href="selectedProject.github"
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-600 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800/50 transition-colors duration-300 font-medium"
+                    target="_blank"
+                  >
+                    <CodeBracketIcon class="h-5 w-5" />
+                    View Source Code
+                  </a>
+                  <a 
+                    :href="selectedProject.demo"
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 font-medium"
+                    target="_blank"
+                  >
+                    <LinkIcon class="h-5 w-5" />
+                    Live Demo
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </transition>
   </section>
 </template>
 
-<script>
+<script setup>
 import { ref, computed } from 'vue'
 
+// Heroicons
+import { 
+  EyeIcon,
+  CodeBracketIcon,
+  LinkIcon,
+  ChevronDownIcon,
+  XMarkIcon,
+  CheckCircleIcon,
+  ShoppingCartIcon,
+  ClipboardDocumentCheckIcon,
+  DevicePhoneMobileIcon,
+  ChatBubbleLeftRightIcon,
+  WindowIcon,
+  Cog6ToothIcon
+} from '@heroicons/vue/24/outline'
+// Tech Stack Data
+const techStack = [
+  { name: 'Vue.js', category: 'Frontend', level: 95, color: '#4FC08D', iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg' },
+  { name: 'React', category: 'Frontend', level: 90, color: '#61DAFB', iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+  { name: 'JavaScript', category: 'Language', level: 95, color: '#F7DF1E', iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
+  { name: 'Node.js', category: 'Backend', level: 88, color: '#339933', iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
+  { name: 'Laravel', category: 'Backend', level: 85, color: '#FF2D20', iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-plain.svg' },
+  { name: 'Git', category: 'Tools', level: 92, color: '#F05032', iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
+  { name: 'Tailwind CSS', category: 'Styling', level: 95, color: '#06B6D4', iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg' }
+]
+// Project categories
+const categories = ['All', 'Web App', 'Mobile App', 'UI/UX', 'Backend']
+
+// Projects Data
+const projects = [
+  {
+    id: 1,
+    title: 'E-Commerce Platform',
+    category: 'Web App',
+    description: 'Modern e-commerce platform with complete features...',
+    fullDescription: 'Full-stack e-commerce platform built with Vue.js and Laravel...',
+    technologies: ['Vue.js', 'Laravel', 'Tailwind CSS', 'MySQL', 'Stripe API', 'Redis'],
+    bgColor: 'bg-gradient-to-br from-blue-500 to-blue-600',
+    icon: ShoppingCartIcon,
+    github: 'https://github.com',
+    demo: 'https://demo.com',
+    features: [
+      'Integrated payment system with multiple gateways',
+      'Comprehensive admin dashboard',
+      'Real-time inventory management',
+      'Mobile-responsive design',
+      'SEO optimized with meta management'
+    ]
+  },
+  {
+    id: 2,
+    title: 'Task Management App',
+    category: 'Web App',
+    description: 'Team collaboration task management application...',
+    fullDescription: 'Productivity application that enables effective team collaboration...',
+    technologies: ['React', 'Node.js', 'Socket.io', 'MongoDB', 'Express', 'JWT'],
+    bgColor: 'bg-gradient-to-br from-green-500 to-green-600',
+    icon: ClipboardDocumentCheckIcon,
+    github: 'https://github.com',
+    demo: 'https://demo.com',
+    features: [
+      'Real-time team collaboration',
+      'Advanced progress tracking',
+      'Calendar and deadline integration',
+      'Team member management',
+      'Mobile-responsive interface'
+    ]
+  },
+  // Tambahkan project lainnya sesuai kebutuhan...
+]
+
+// State & logic
+const activeTab = ref('Projects')
+const activeFilter = ref('All')
+const showAll = ref(false)
+const selectedProject = ref(null)
+const displayLimit = 6
+
+const filteredProjects = computed(() => {
+  let filtered = activeFilter.value === 'All' 
+    ? projects 
+    : projects.filter(project => project.category === activeFilter.value)
+  return showAll.value ? filtered : filtered.slice(0, displayLimit)
+})
+
+const openProject = (project) => {
+  selectedProject.value = project
+  document.body.style.overflow = 'hidden'
+}
+
+const closeProject = () => {
+  selectedProject.value = null
+  document.body.style.overflow = 'auto'
+}
+
+const loadMore = () => {
+  showAll.value = true
+}
+
+const handleImageError = (event) => {
+  event.target.style.display = 'none'
+  console.log('Failed to load image:', event.target.src)
+}
+</script>
+
+<script>
 export default {
   name: 'Projects',
-  setup() {
-    const activeFilter = ref('All')
-    const showAll = ref(false)
-    const selectedProject = ref(null)
-
-    const categories = ['All', 'Web App', 'Mobile App', 'UI/UX', 'Backend']
-
-    const projects = [
-      {
-        id: 1,
-        title: 'E-Commerce Platform',
-        category: 'Web App',
-        description: 'Platform e-commerce modern dengan fitur lengkap untuk bisnis online',
-        fullDescription: 'Platform e-commerce full-stack yang dibangun dengan Vue.js dan Laravel. Dilengkapi dengan sistem pembayaran terintegrasi, dashboard admin yang komprehensif, dan sistem manajemen inventori yang canggih.',
-        technologies: ['Vue.js', 'Laravel', 'Tailwind CSS', 'MySQL', 'Stripe API'],
-        gradient: 'bg-gradient-to-br from-blue-500 to-purple-600',
-        emoji: '🛒',
-        github: 'https://github.com',
-        demo: 'https://demo.com',
-        features: [
-          'Sistem pembayaran terintegrasi',
-          'Dashboard admin lengkap',
-          'Manajemen inventori real-time',
-          'Responsive design',
-          'SEO optimized'
-        ]
-      },
-      {
-        id: 2,
-        title: 'Task Management App',
-        category: 'Web App',
-        description: 'Aplikasi manajemen tugas dengan kolaborasi tim dan tracking progress',
-        fullDescription: 'Aplikasi produktivitas yang memungkinkan tim untuk berkolaborasi secara efektif. Dilengkapi dengan fitur tracking progress, integrasi calendar, dan sistem notifikasi real-time.',
-        technologies: ['React', 'Node.js', 'Socket.io', 'MongoDB', 'Express'],
-        gradient: 'bg-gradient-to-br from-green-500 to-teal-600',
-        emoji: '📊',
-        github: 'https://github.com',
-        demo: 'https://demo.com',
-        features: [
-          'Real-time collaboration',
-          'Progress tracking',
-          'Calendar integration',
-          'Team management',
-          'Mobile responsive'
-        ]
-      },
-      {
-        id: 3,
-        title: 'Mobile Banking App',
-        category: 'Mobile App',
-        description: 'Aplikasi mobile banking dengan keamanan tinggi dan UX yang intuitif',
-        fullDescription: 'Aplikasi mobile banking yang aman dan user-friendly. Dibangun dengan React Native dan dilengkapi dengan fitur biometrik authentication dan enkripsi end-to-end.',
-        technologies: ['React Native', 'TypeScript', 'Firebase', 'Expo', 'Redux'],
-        gradient: 'bg-gradient-to-br from-indigo-500 to-blue-600',
-        emoji: '📱',
-        github: 'https://github.com',
-        demo: 'https://demo.com',
-        features: [
-          'Biometric authentication',
-          'End-to-end encryption',
-          'Real-time transactions',
-          'Offline mode',
-          'Push notifications'
-        ]
-      },
-      {
-        id: 4,
-        title: 'Chat Application',
-        category: 'Web App',
-        description: 'Aplikasi chat real-time dengan fitur group chat dan file sharing',
-        fullDescription: 'Aplikasi chat real-time yang memungkinkan komunikasi instan. Dilengkapi dengan fitur group chat, file sharing, dan video call terintegrasi.',
-        technologies: ['Vue.js', 'Socket.io', 'Node.js', 'Redis', 'WebRTC'],
-        gradient: 'bg-gradient-to-br from-pink-500 to-rose-600',
-        emoji: '💬',
-        github: 'https://github.com',
-        demo: 'https://demo.com',
-        features: [
-          'Real-time messaging',
-          'Group chat',
-          'File sharing',
-          'Video call integration',
-          'Message encryption'
-        ]
-      },
-      {
-        id: 5,
-        title: 'Portfolio Website',
-        category: 'UI/UX',
-        description: 'Website portfolio modern dengan animasi yang menarik',
-        fullDescription: 'Website portfolio yang didesain dengan fokus pada user experience dan visual appeal. Menggunakan teknologi modern dan animasi yang smooth.',
-        technologies: ['Vue.js', 'Tailwind CSS', 'GSAP', 'Netlify'],
-        gradient: 'bg-gradient-to-br from-orange-500 to-red-600',
-        emoji: '💻',
-        github: 'https://github.com',
-        demo: 'https://demo.com',
-        features: [
-          'Smooth animations',
-          'Responsive design',
-          'SEO optimized',
-          'Fast loading',
-          'Modern UI/UX'
-        ]
-      },
-      {
-        id: 6,
-        title: 'API Gateway',
-        category: 'Backend',
-        description: 'Microservices API gateway dengan load balancing dan monitoring',
-        fullDescription: 'API Gateway yang robust untuk arsitektur microservices. Dilengkapi dengan load balancing, rate limiting, dan monitoring real-time.',
-        technologies: ['Node.js', 'Express', 'Redis', 'Docker', 'Kubernetes'],
-        gradient: 'bg-gradient-to-br from-gray-500 to-gray-700',
-        emoji: '🔧',
-        github: 'https://github.com',
-        demo: 'https://demo.com',
-        features: [
-          'Load balancing',
-          'Rate limiting',
-          'API monitoring',
-          'Caching system',
-          'Security middleware'
-        ]
-      }
-    ]
-
-    const filteredProjects = computed(() => {
-      let filtered = activeFilter.value === 'All' 
-        ? projects 
-        : projects.filter(project => project.category === activeFilter.value)
-      
-      return showAll.value ? filtered : filtered.slice(0, 6)
-    })
-
-    const openProject = (project) => {
-      selectedProject.value = project
-    }
-
-    const closeProject = () => {
-      selectedProject.value = null
-    }
-
-    const loadMore = () => {
-      showAll.value = true
-    }
-
-    return {
-      activeFilter,
-      showAll,
-      selectedProject,
-      categories,
-      projects,
-      filteredProjects,
-      openProject,
-      closeProject,
-      loadMore
-    }
+  components: {
+    EyeIcon,
+    CodeBracketIcon,
+    LinkIcon,
+    ChevronDownIcon,
+    XMarkIcon,
+    CheckCircleIcon,
+    ShoppingCartIcon,
+    ClipboardDocumentCheckIcon,
+    DevicePhoneMobileIcon,
+    ChatBubbleLeftRightIcon,
+    WindowIcon,
+    Cog6ToothIcon
   }
 }
 </script>
 
+
 <style scoped>
-.section-padding {
-  padding: 5rem 0;
+.global-bg {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #1e1b4b 100%);
+  min-height: 100vh;
 }
 
-.container-custom {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+.modal-enter-active, .modal-leave-active {
+  transition: all 0.3s ease;
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.modal-enter-from, .modal-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-enter-to, .modal-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Custom scrollbar for modal */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #374151;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #6B7280;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
 }
 </style>

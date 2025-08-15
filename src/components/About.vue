@@ -1,12 +1,11 @@
 <template>
-  <section id="about" class="section-padding bg-gradient-primary min-h-screen">
+  <section id="about" class="section-padding min-h-screen bg-transparent">
     <div class="container-custom max-w-7xl mx-auto px-6">
       <!-- Judul Section -->
       <div class="text-center mb-20">
-        <h2 class="section-title font-bold text-gray-900 mb-6 animate-title">
+        <h2 class="section-title font-bold text-white mb-6 animate-title">
           Tentang <span class="gradient-text">Saya</span>
         </h2>
-        <div class="w-32 h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 mx-auto rounded-full animate-pulse"></div>
       </div>
 
       <div class="main-grid gap-16 items-start">
@@ -17,6 +16,13 @@
             <div 
               class="flex transition-transform duration-700 ease-in-out h-full"
               :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
+              @touchstart="handleTouchStart"
+              @touchmove="handleTouchMove"
+              @touchend="handleTouchEnd"
+              @mousedown="handleMouseDown"
+              @mousemove="handleMouseMove"
+              @mouseup="handleMouseEnd"
+              @mouseleave="handleMouseEnd"
             >
               <div
                 v-for="(item, index) in slides"
@@ -26,7 +32,8 @@
                 <img 
                   :src="item.image" 
                   :alt="item.title"
-                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 select-none"
+                  draggable="false"
                 />
                 <!-- Overlay gradient -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -39,13 +46,16 @@
             </div>
           </div>
 
+
+
           <!-- Navigation Dots -->
           <div class="flex justify-center gap-3 mt-8">
             <button
+              type="button"
               v-for="(slide, index) in slides"
               :key="`dot-${index}`"
               @click="goToSlide(index)"
-              class="dot-button"
+              class="dot-button transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               :class="{
                 'dot-active': index === currentSlide,
                 'dot-inactive': index !== currentSlide
@@ -123,63 +133,117 @@ const CodeBracketIcon = { template: '<div class="text-4xl">💻</div>' }
 const LightBulbIcon = { template: '<div class="text-4xl">💡</div>' }
 const BookOpenIcon = { template: '<div class="text-4xl">📚</div>' }
 const UserGroupIcon = { template: '<div class="text-4xl">👥</div>' }
-const ChatBotIcon = { template: '<div class="text-4xl">🤖</div>' } // Tambahan icon chatbot
+const ChatBotIcon = { template: '<div class="text-4xl">🤖</div>' }
 
 const currentSlide = ref(0)
 
-// Tambah 1 slot foto & deskripsi untuk Chatbot
+// Touch/Mouse handling
+const startX = ref(0)
+const currentX = ref(0)
+const isDragging = ref(false)
+const threshold = 50 // minimum distance to trigger swipe
+
 const slides = [
   {
-    title: "Full Stack Developer",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    description: "👋 Halo! Saya seorang Full Stack Developer yang passionate dalam menciptakan pengalaman digital yang luar biasa. Dengan pengalaman bertahun-tahun, saya siap menghadirkan solusi teknologi terdepan untuk setiap tantangan bisnis modern.",
+    title: "CEO",
+    image: new URL('@/assets/kangmj.webp', import.meta.url).href,
+    description: "",
     icon: RocketLaunchIcon
   },
   {
-    title: "Keahlian Modern",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=600&fit=crop",
-    description: "🚀 Keahlian saya meliputi Vue.js, React, Node.js, Laravel, dan berbagai framework terkini. Selalu mengikuti perkembangan teknologi untuk memberikan hasil terbaik dalam setiap proyek yang dikerjakan.",
+    title: "UI/UX Designer",
+    image: new URL('@/assets/afthan.webp', import.meta.url).href,
+    description: "",
     icon: CodeBracketIcon
   },
   {
-    title: "Fokus pada Detail",
-    image: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=800&h=600&fit=crop",
-    description: "💡 Saya percaya bahwa detail kecil dapat membuat perbedaan besar dalam pengalaman pengguna. Setiap pixel, setiap animasi, dan setiap interaksi dirancang dengan penuh perhatian untuk menciptakan user experience yang tak terlupakan.",
+    title: "Frond End Developer",
+    image: new URL('@/assets/rendi.webp', import.meta.url).href,
+    description: "Hallo saya Rendi, saya seorang Front End Developer, keahlian saya meliputi vue.js, tailwindcss, bootstrap, dan berbagai framework terkini. Saya selalu mengikuti perkembangan teknologi untuk memberikan hasil terbaik dalam proyek yang saya kerjakan",
     icon: LightBulbIcon
   },
   {
-    title: "Pembelajar Sejati",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop",
-    description: "📚 Di waktu luang, saya mempelajari teknologi baru dan berkontribusi di open source. Belajar adalah passion yang tidak pernah berhenti dalam perjalanan sebagai developer. Sharing knowledge adalah kunci kemajuan bersama.",
+    title: "Back End Developer",
+    image: new URL('@/assets/vie.webp', import.meta.url).href,
+    description: "Hey! I'm Viee, a passionate web wizard turning ideas into interactive, eye-catching websites. I thrive on experimenting with new tech, crafting smooth user experiences, and making digital stuff that people actually enjoy. Always caffeinated, always curious, and always coding my way to the next cool project!",
     icon: BookOpenIcon
   },
   {
-    title: "Kolaborasi Tim",
-    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=600&fit=crop",
+    title: "Content Creator",
+    image: new URL('@/assets/dede.webp', import.meta.url).href,
     description: "🤝 Saya senang berkolaborasi untuk menghadirkan solusi yang inovatif dan bermanfaat. Kerja sama tim yang solid adalah kunci kesuksesan setiap proyek besar. Komunikasi yang baik menghasilkan produk yang luar biasa.",
     icon: UserGroupIcon
   },
   {
-    title: "Chatbot Interaktif",
-    image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800&h=600&fit=crop",
-    description: "🤖 Saya juga membangun chatbot interaktif untuk meningkatkan engagement dan memberikan layanan otomatis kepada user. Chatbot ini dapat diintegrasikan ke berbagai platform sesuai kebutuhan bisnis Anda.",
+    title: "QA/QC",
+    image: new URL('@/assets/binek.webp', import.meta.url).href,
+    description: "Hai, saya Rizky Ramadhan! Saat ini saya berperan sebagai QA/QC (Quality Assurance & Quality Control), yang fokus memastikan setiap proses dan hasil akhir sesuai dengan standar kualitas terbaik. Tugas saya tidak hanya menemukan bug atau kesalahan, tetapi juga mencegahnya sejak awal, agar produk yang dihasilkan benar-benar memenuhi ekspektasi pengguna.",
     icon: ChatBotIcon
   }
 ]
 
-// Navigation functions (manual only, tanpa auto swipe)
+// Navigation functions
 const goToSlide = (index) => {
   currentSlide.value = index
+}
+
+// Touch events
+const handleTouchStart = (e) => {
+  startX.value = e.touches[0].clientX
+  isDragging.value = true
+}
+
+const handleTouchMove = (e) => {
+  if (!isDragging.value) return
+  currentX.value = e.touches[0].clientX
+}
+
+const handleTouchEnd = () => {
+  if (!isDragging.value) return
+  
+  const diffX = startX.value - currentX.value
+  
+  if (Math.abs(diffX) > threshold) {
+    if (diffX > 0) {
+      nextSlide()
+    } else {
+      prevSlide()
+    }
+  }
+  
+  isDragging.value = false
+}
+
+// Mouse events (for desktop)
+const handleMouseDown = (e) => {
+  startX.value = e.clientX
+  isDragging.value = true
+}
+
+const handleMouseMove = (e) => {
+  if (!isDragging.value) return
+  currentX.value = e.clientX
+}
+
+const handleMouseEnd = () => {
+  if (!isDragging.value) return
+  
+  const diffX = startX.value - currentX.value
+  
+  if (Math.abs(diffX) > threshold) {
+    if (diffX > 0) {
+      nextSlide()
+    } else {
+      prevSlide()
+    }
+  }
+  
+  isDragging.value = false
 }
 </script>
 
 <style scoped>
 /* Base Styles */
-.bg-gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-}
-
 .section-padding {
   padding: 100px 0;
 }
@@ -225,31 +289,48 @@ const goToSlide = (index) => {
   justify-content: center;
 }
 
-/* Navigation Dots */
+/* Navigation Dots - FIXED STYLES */
 .dot-button {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 2px solid;
-  transition: all 0.5s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
+  background: transparent;
+  outline: none;
+  position: relative;
+  z-index: 10;
+}
+
+.dot-button:hover {
+  transform: scale(1.1);
 }
 
 .dot-active {
-  background-color: white;
-  border-color: white;
-  transform: scale(1.25);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  border-color: #3b82f6;
+  transform: scale(1.2);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
 }
 
 .dot-inactive {
-  background-color: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .dot-inactive:hover {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.8);
   transform: scale(1.1);
+}
+
+/* Prevent text selection on draggable elements */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 /* Decorative Elements */
@@ -387,12 +468,6 @@ const goToSlide = (index) => {
   animation: gradientShift 3s ease-in-out infinite;
 }
 
-.text-gradient {
-  background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
-  background-size: 300%;
-  animation: gradientShift 3s ease-in-out infinite;
-}
-
 @keyframes gradientShift {
   0%, 100% {
     background-position: 0% 50%;
@@ -400,11 +475,6 @@ const goToSlide = (index) => {
   50% {
     background-position: 100% 50%;
   }
-}
-
-/* Hover Effects */
-button:hover {
-  transform: scale(1.1);
 }
 
 /* Responsive Design */
@@ -472,6 +542,11 @@ button:hover {
   
   .content-card {
     padding: 1.5rem;
+  }
+  
+  .dot-button {
+    width: 16px;
+    height: 16px;
   }
 }
 </style>
